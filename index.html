@@ -194,6 +194,251 @@
             min-height: 3.5rem;
         }
         
+        /* 移动端滑动优化 */
+        @media (max-width: 767px) {
+            body {
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .page-container {
+                min-height: 100vh;
+                height: auto;
+            }
+            
+            .overflow-y-auto {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 横幅优化 */
+        }
+        
+        /* 手机端按钮竖列排版 - 扩展到更宽范围 */
+        @media (max-width: 767px) {
+            .mobile-vertical-buttons {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            
+            .mobile-vertical-buttons .flip-button {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        /* 强制手机端竖列排版，覆盖Tailwind的grid类 */
+        @media (max-width: 767px) {
+            .grid.mobile-vertical-buttons {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .grid.mobile-vertical-buttons > * {
+                grid-column: 1 / -1 !important;
+            }
+            
+            /* 针对移动端模式的强制规则 */
+            .mobile-mode .grid.mobile-vertical-buttons {
+                grid-template-columns: 1fr !important;
+                display: grid !important;
+            }
+            
+            .mobile-mode .grid.mobile-vertical-buttons > * {
+                grid-column: 1 / -1 !important;
+                width: 100% !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* 覆盖所有可能的grid类 */
+            .mobile-mode .grid-cols-1.mobile-vertical-buttons,
+            .mobile-mode .grid-cols-2.mobile-vertical-buttons,
+            .mobile-mode .grid-cols-3.mobile-vertical-buttons,
+            .mobile-mode .md\:grid-cols-2.mobile-vertical-buttons {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        
+        /* 页面容器高度设置 */
+        .page-container {
+            min-height: 100vh;
+            height: auto;
+        }
+        
+        .page-container.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 桌面端专用样式 */
+        .desktop-mode {
+            --base-font-size: 16px;
+            --header-height: 80px;
+            --content-padding: 2rem;
+        }
+        
+        .desktop-mode .container {
+            max-width: 1200px;
+        }
+        
+        .desktop-mode .grid-cols-1 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .desktop-mode .grid-cols-2 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        .desktop-mode .grid-cols-3 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        
+        .desktop-mode .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .desktop-mode .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        .desktop-mode .text-4xl {
+            font-size: 2.25rem;
+        }
+        
+        .desktop-mode .p-4 {
+            padding: 1.5rem;
+        }
+        
+        .desktop-mode .p-6 {
+            padding: 2rem;
+        }
+        
+        .desktop-mode .p-8 {
+            padding: 3rem;
+        }
+        
+        .desktop-mode .member-card {
+            min-width: 280px;
+            max-width: 320px;
+        }
+        
+        .desktop-mode .flip-button {
+            min-height: 4rem;
+        }
+        
+        /* 移动端专用样式 */
+        .mobile-mode {
+            --base-font-size: 14px;
+            --header-height: 60px;
+            --content-padding: 1rem;
+        }
+        
+        .mobile-mode body {
+            font-size: var(--base-font-size);
+        }
+        
+        .mobile-mode .container {
+            max-width: 100%;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        .mobile-mode .grid-cols-1,
+        .mobile-mode .grid-cols-2,
+        .mobile-mode .grid-cols-3 {
+            grid-template-columns: 1fr;
+        }
+        
+        .mobile-mode .text-2xl {
+            font-size: 1.25rem;
+        }
+        
+        .mobile-mode .text-3xl {
+            font-size: 1.5rem;
+        }
+        
+        .mobile-mode .text-4xl {
+            font-size: 1.75rem;
+        }
+        
+        .mobile-mode .p-4 {
+            padding: 0.75rem;
+        }
+        
+        .mobile-mode .p-6 {
+            padding: 1rem;
+        }
+        
+        .mobile-mode .p-8 {
+            padding: 1.5rem;
+        }
+        
+        .mobile-mode .member-card {
+            min-width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .mobile-mode .flip-button {
+            min-height: 3rem;
+            font-size: 0.875rem;
+        }
+        
+        .mobile-mode .btn-3d {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .mobile-mode .fixed.top-0 {
+            height: 60px;
+        }
+        
+        .mobile-mode .overflow-y-auto {
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .mobile-mode .overflow-y-auto::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
+        }
+        
+        /* 移动端内容页面滑动优化 - 只有一个滑动区域 */
+        .mobile-mode .content-page {
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .mobile-mode .content-page .container {
+            overflow: hidden;
+            height: 100%;
+            padding-top: 4rem;
+            padding-bottom: 1rem;
+        }
+        
+        .mobile-mode .content-page section {
+            overflow-y: auto;
+            height: calc(100vh - 140px);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .mobile-mode .content-page section::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .mobile-mode .grid {
+            gap: 0.5rem;
+        }
+        
+        .mobile-mode .rounded-lg {
+            border-radius: 0.375rem;
+        }
+        
+        .mobile-mode .shadow-lg {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         @media (min-width: 640px) {
             .grid > .flip-button {
                 min-height: 4rem;
@@ -203,25 +448,221 @@
             }
         }
         }
+        
+        /* 弹幕广告样式 */
+        .danmaku-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .danmaku-item {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 16px;
+            font-weight: bold;
+            color: #7cfc00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: danmaku-move 15s linear infinite, gradient-shift 3s ease-in-out infinite;
+        }
+        
+        @keyframes danmaku-move {
+            0% {
+                transform: translateX(100vw);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .danmaku-item:nth-child(2n) {
+            top: 40vh;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+        
+        .danmaku-item:nth-child(3n) {
+            top: 70vh;
+            animation-duration: 12s;
+            animation-delay: -10s;
+        }
+        
+        /* 移动端弹窗适配 */
+        @media (max-width: 767px) {
+            #mod-recommendation > div {
+                max-width: 90vw;
+                margin: 0 5vw;
+                padding: 1.5rem;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            #mod-recommendation h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            #mod-recommendation .space-y-6 > div {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            #mod-recommendation h3 {
+                font-size: 1.1rem;
+                word-break: break-word;
+                line-height: 1.3;
+            }
+            
+            #mod-recommendation p {
+                font-size: 0.875rem;
+            }
+            
+            #mod-recommendation button {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+            
+            #mod-recommendation .space-y-6 {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            #mod-recommendation .space-y-6 > div {
+                margin-bottom: 0 !important;
+            }
+            
+            #mod-recommendation .flex.items-center {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            #mod-recommendation .flex.items-center input[type="checkbox"] {
+                margin-right: 0;
+                margin-bottom: 0.25rem;
+            }
+        }
     </style>
     <!-- 引入像素字体 -->
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
-<body class="font-pixel bg-gray-900 text-white overflow-hidden h-screen">
-    <!-- 背景层 -->
-    <div class="fixed inset-0 block-bg opacity-30 z-0"></div>
-    
-    <!-- 顶部横幅 -->
-    <div class="fixed top-0 left-0 w-full h-16 z-10 px-4">
-        <div class="max-w-6xl mx-auto h-full">
-            <img id="banner-image" src="op.png" alt="顶部横幅" class="w-full h-full object-cover transition-opacity duration-500 rounded-lg">
+<body class="font-pixel bg-gray-900 text-white min-h-screen overflow-x-hidden">
+    <!-- 设备选择模态框 -->
+    <div id="device-selector" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[9999]">
+        <div class="bg-gray-800 border-2 border-minecraft-green rounded-lg p-8 max-w-md mx-4 text-center">
+            <h2 class="text-2xl font-bold mb-6 text-minecraft-green">选择您的设备类型</h2>
+            <p class="text-gray-300 mb-8">为了给您提供最佳的浏览体验，请选择您当前使用的设备</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button id="desktop-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <div class="text-4xl mb-2">💻</div>
+                    <div class="text-lg font-semibold">电脑浏览</div>
+                    <div class="text-sm text-gray-300 mt-1">适合大屏幕设备</div>
+                </button>
+                
+                <button id="mobile-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <div class="text-4xl mb-2">📱</div>
+                    <div class="text-lg font-semibold">手机浏览</div>
+                    <div class="text-sm text-gray-300 mt-1">适合移动设备</div>
+                </button>
+            </div>
+            
+            <div class="mt-6 text-xs text-gray-400">
+                <label class="flex items-center justify-center">
+                    <input type="checkbox" id="remember-device" class="mr-2">
+                    <span>记住我的选择</span>
+                </label>
+            </div>
         </div>
     </div>
+
+    <!-- 模组推荐弹窗 -->
+    <div id="mod-recommendation" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[9998] hidden">
+        <div class="bg-gray-800 border-2 border-minecraft-green rounded-lg p-8 max-w-lg mx-4 text-center">
+            <h2 class="text-3xl font-bold mb-6 text-minecraft-green text-shadow">🔥 热门模组推荐 🔥</h2>
+            <div class="space-y-6">
+                <!-- 重点宣传的123的世界·崩坏模组 -->
+                <div class="bg-gradient-to-r from-red-900 via-purple-900 to-black p-8 rounded-lg pixel-borders transform transition-transform hover:scale-105 border-4 border-red-500 shadow-lg shadow-red-500/50">
+                    <div class="text-5xl mb-4 animate-bounce">👻</div>
+                    <h3 class="text-3xl font-bold mb-3 text-red-300 break-words">🔥 123的世界·崩坏 🔥</h3>
+                    <div class="text-lg text-orange-300 font-bold mb-4 animate-pulse">恐怖模组 | 我的世界机制最强</div>
+                    <p class="text-gray-200 text-lg leading-relaxed">史诗级恐怖崩坏主题模组，带来前所未有的惊悚末日生存体验！探索崩坏世界，面对恐怖生物，收集稀有资源，打造强力装备，在末日恐怖中求生！</p>
+                    <div class="mt-4 text-red-400 font-bold text-xl animate-pulse">⚠️ 最强机制 ⚠️</div>
+                </div>
+                
+                <!-- 其他模组 -->
+                <div class="bg-minecraft-dark p-6 rounded-lg pixel-borders transform transition-transform hover:scale-105">
+                    <div class="text-4xl mb-4">🎨</div>
+                    <h3 class="text-xl font-bold mb-3 text-minecraft-blue">梗多材质（带音效包）</h3>
+                    <p class="text-gray-300">精美的材质包，配合生动的音效，让游戏体验更加丰富有趣</p>
+                </div>
+                
+                <div class="bg-minecraft-dark p-6 rounded-lg pixel-borders transform transition-transform hover:scale-105">
+                    <div class="text-4xl mb-4">⚔️</div>
+                    <h3 class="text-xl font-bold mb-3 text-minecraft-red">【匠心重铸】创世兵器录</h3>
+                    <p class="text-gray-300">精心设计的武器系统，全新的战斗体验，让冒险更加刺激</p>
+                </div>
+                
+                <div class="bg-minecraft-dark p-4 rounded-lg pixel-borders">
+                    <p class="text-lg text-minecraft-yellow font-bold">🌟 均超级有趣好玩</p>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <button id="close-mod-recommendation" class="bg-minecraft-green hover:bg-minecraft-yellow text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <i class="fa fa-check mr-2"></i>知道了
+                </button>
+            </div>
+            
+            <div class="mt-4 text-xs text-gray-400">
+                <label class="flex items-center justify-center">
+                    <input type="checkbox" id="dont-show-mod-recommendation" class="mr-2">
+                    <span>不再显示</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <!-- 背景层 -->
+    <div class="fixed inset-0 block-bg opacity-30 z-[-1]"></div>
+    
+    <!-- 设备切换按钮 -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="device-toggle" class="bg-minecraft-green hover:bg-minecraft-yellow text-black font-bold py-2 px-3 rounded-lg text-xs sm:text-sm transition-all duration-300 shadow-lg">
+            <span id="device-icon">📱</span>
+            <span id="device-text">切换设备</span>
+        </button>
+    </div>
+    
+    <!-- 弹幕广告容器 -->
+    <div id="danmaku-container" class="danmaku-container"></div>
     
     <!-- 主菜单页面 -->
     <div id="main-menu" class="page-container main-menu active relative z-20 h-full flex flex-col">
         <!-- 头部 -->
-        <header class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center mt-16">
+        <header class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center mt-8 sm:mt-12 md:mt-16">
             <!-- Logo -->
             <div class="w-64 h-48 sm:w-80 sm:h-60 md:w-96 md:h-72 mb-4 sm:mb-8 flex items-center justify-center animate-float">
                 <img src="logo.png" 
@@ -237,7 +678,7 @@
             
             <!-- 按钮菜单 -->
             <div class="w-full max-w-2xl px-2 sm:px-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mobile-vertical-buttons">
                      <button onclick="showPage('about-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
                          <div class="button-front">
                              <i class="fa fa-info-circle mr-1 sm:mr-2"></i>团队介绍
@@ -292,7 +733,7 @@
     
     <!-- 团队介绍页面 -->
     <div id="about-page" class="page-container content-page relative z-20 h-full flex flex-col">
-        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+        <div class="container mx-auto px-4 py-8 flex-grow mt-12 sm:mt-16 md:mt-20">
             <!-- 返回按钮 -->
             <div class="mb-6">
                 <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
@@ -326,7 +767,7 @@
     
     <!-- 团规页面 -->
     <div id="rules-page" class="page-container content-page relative z-20 h-full flex flex-col">
-        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+        <div class="container mx-auto px-4 py-8 flex-grow mt-12 sm:mt-16 md:mt-20">
             <!-- 返回按钮 -->
             <div class="mb-6">
                 <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
@@ -388,7 +829,7 @@
     
     <!-- 招人要求页面 -->
     <div id="recruitment-page" class="page-container content-page relative z-20 h-full flex flex-col">
-        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+        <div class="container mx-auto px-4 py-8 flex-grow mt-12 sm:mt-16 md:mt-20">
             <!-- 返回按钮 -->
             <div class="mb-6">
                 <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
@@ -447,7 +888,7 @@
     
     <!-- 副团长选拔页面 -->
     <div id="deputy-page" class="page-container content-page relative z-20 h-full flex flex-col">
-        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+        <div class="container mx-auto px-4 py-8 flex-grow mt-12 sm:mt-16 md:mt-20">
             <!-- 返回按钮 -->
             <div class="mb-6">
                 <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
@@ -530,7 +971,7 @@
     
     <!-- 团队成员页面 -->
     <div id="members-page" class="page-container content-page relative z-20 h-full flex flex-col">
-        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+        <div class="container mx-auto px-4 py-8 flex-grow mt-12 sm:mt-16 md:mt-20">
             <!-- 返回按钮 -->
             <div class="mb-6">
                 <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
@@ -546,7 +987,7 @@
                     <!-- 团长 -->
                     <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
                         <div class="h-32 sm:h-40 md:h-48 bg-minecraft-blue flex items-center justify-center">
-                            <img src="tz.JPEG" 
+                            <img src="tz.png" 
                                  alt="团长" 
                                  class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-cover rounded-full border-2 sm:border-4 border-minecraft-green">
                         </div>
@@ -565,7 +1006,7 @@
                     <!-- 开发者1 -->
                     <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
                         <div class="h-48 bg-minecraft-green flex items-center justify-center">
-                            <img src="wz1.JPEG" 
+                            <img src="wz1.png" 
                                  alt="开发者" 
                                  class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
                         </div>
@@ -582,7 +1023,7 @@
                     <!-- 开发者2 -->
                     <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
                         <div class="h-48 bg-minecraft-green flex items-center justify-center">
-                            <img src="wz2.JPEG" 
+                            <img src="wz2.png" 
                                  alt="开发者" 
                                  class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
                         </div>
@@ -599,7 +1040,7 @@
                     <!-- 开发者3 -->
                     <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
                         <div class="h-48 bg-minecraft-green flex items-center justify-center">
-                            <img src="wz3.JPEG" 
+                            <img src="wz3.png" 
                                  alt="开发者" 
                                  class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
                         </div>
@@ -638,7 +1079,203 @@
     
     <!-- JavaScript -->
     <script>
-        // 页面切换功能
+        // 设备检测和UI管理
+        class DeviceManager {
+            constructor() {
+                this.currentDevice = this.detectDevice();
+                this.deviceSelector = document.getElementById('device-selector');
+                this.rememberDevice = document.getElementById('remember-device');
+                this.init();
+            }
+            
+            // 检测设备类型
+            detectDevice() {
+                // 检查本地存储
+                const savedDevice = localStorage.getItem('preferred-device');
+                if (savedDevice) {
+                    return savedDevice;
+                }
+                
+                // 自动检测
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                return isMobile ? 'mobile' : 'desktop';
+            }
+            
+            // 初始化
+            init() {
+                this.bindEvents();
+                
+                // 如果已记住设备选择，直接应用
+                if (localStorage.getItem('preferred-device')) {
+                    this.applyDevice(this.currentDevice);
+                } else {
+                    // 显示设备选择器
+                    this.showSelector();
+                }
+            }
+            
+            // 绑定事件
+            bindEvents() {
+                document.getElementById('desktop-btn').addEventListener('click', () => {
+                    this.selectDevice('desktop');
+                });
+                
+                document.getElementById('mobile-btn').addEventListener('click', () => {
+                    this.selectDevice('mobile');
+                });
+            }
+            
+            // 显示设备选择器
+            showSelector() {
+                this.deviceSelector.style.display = 'flex';
+            }
+            
+            // 隐藏设备选择器
+            hideSelector() {
+                this.deviceSelector.style.display = 'none';
+            }
+            
+            // 选择设备
+            selectDevice(device) {
+                this.currentDevice = device;
+                
+                // 记住选择
+                if (this.rememberDevice.checked) {
+                    localStorage.setItem('preferred-device', device);
+                }
+                
+                this.applyDevice(device);
+                this.hideSelector();
+            }
+            
+            // 应用设备样式
+            applyDevice(device) {
+                document.body.classList.remove('desktop-mode', 'mobile-mode');
+                document.body.classList.add(device + '-mode');
+                
+                // 更新切换按钮显示
+                this.updateToggleButton(device);
+                
+                // 应用设备特定的样式
+                if (device === 'mobile') {
+                    this.applyMobileStyles();
+                } else {
+                    this.applyDesktopStyles();
+                }
+            }
+            
+            // 更新切换按钮显示
+            updateToggleButton(device) {
+                const toggleBtn = document.getElementById('device-toggle');
+                const deviceIcon = document.getElementById('device-icon');
+                const deviceText = document.getElementById('device-text');
+                
+                if (device === 'mobile') {
+                    deviceIcon.textContent = '💻';
+                    deviceText.textContent = '切换到电脑版';
+                } else {
+                    deviceIcon.textContent = '📱';
+                    deviceText.textContent = '切换到手机版';
+                }
+            }
+            
+            // 应用移动端样式
+            applyMobileStyles() {
+                // 移动端优化
+                document.documentElement.style.setProperty('--base-font-size', '14px');
+                document.documentElement.style.setProperty('--header-height', '60px');
+                document.documentElement.style.setProperty('--content-padding', '1rem');
+                
+                // 优化移动端布局
+                const containers = document.querySelectorAll('.container');
+                containers.forEach(container => {
+                    container.classList.add('px-2'); // 减小内边距
+                });
+                
+                // 调整按钮大小
+                const buttons = document.querySelectorAll('.btn-3d, button');
+                buttons.forEach(btn => {
+                    btn.classList.add('text-sm', 'py-2', 'px-3');
+                });
+                
+                // 强制按钮竖列排列
+                const buttonContainer = document.querySelector('.mobile-vertical-buttons');
+                if (buttonContainer) {
+                    buttonContainer.style.display = 'grid';
+                    buttonContainer.style.gridTemplateColumns = '1fr';
+                    buttonContainer.style.gap = '1rem';
+                }
+                
+                // 显示模组推荐弹窗（如果不存在不显示标记）
+                if (!localStorage.getItem('dontShowModRecommendation')) {
+                    setTimeout(() => {
+                        document.getElementById('mod-recommendation').classList.remove('hidden');
+                    }, 500); // 延迟500ms显示，让设备选择动画完成
+                }
+            }
+            
+            // 应用桌面端样式
+            applyDesktopStyles() {
+                // 桌面端优化
+                document.documentElement.style.setProperty('--base-font-size', '16px');
+                document.documentElement.style.setProperty('--header-height', '80px');
+                document.documentElement.style.setProperty('--content-padding', '2rem');
+                
+                // 恢复桌面端布局
+                const containers = document.querySelectorAll('.container');
+                containers.forEach(container => {
+                    container.classList.remove('px-2');
+                });
+                
+                // 恢复按钮大小
+                const buttons = document.querySelectorAll('.btn-3d, button');
+                buttons.forEach(btn => {
+                    btn.classList.remove('text-sm', 'py-2', 'px-3');
+                });
+                
+                // 显示模组推荐弹窗（如果不存在不显示标记）
+                if (!localStorage.getItem('dontShowModRecommendation')) {
+                    setTimeout(() => {
+                        document.getElementById('mod-recommendation').classList.remove('hidden');
+                    }, 500); // 延迟500ms显示，让设备选择动画完成
+                }
+            }
+            
+            // 切换设备模式
+            toggleDevice() {
+                const newDevice = this.currentDevice === 'desktop' ? 'mobile' : 'desktop';
+                this.selectDevice(newDevice);
+            }
+            
+            // 获取当前设备
+            getCurrentDevice() {
+                return this.currentDevice;
+            }
+        }
+        
+        // 初始化设备管理器
+        let deviceManager;
+        
+        // 页面加载完成后初始化设备管理器
+        document.addEventListener('DOMContentLoaded', function() {
+            deviceManager = new DeviceManager();
+            
+            // 绑定设备切换按钮事件
+            document.getElementById('device-toggle').addEventListener('click', function() {
+                deviceManager.toggleDevice();
+            });
+            
+            // 绑定模组推荐弹窗关闭事件
+            document.getElementById('close-mod-recommendation').addEventListener('click', function() {
+                const dontShowAgain = document.getElementById('dont-show-mod-recommendation').checked;
+                if (dontShowAgain) {
+                    localStorage.setItem('dontShowModRecommendation', 'true');
+                }
+                document.getElementById('mod-recommendation').classList.add('hidden');
+            });
+        });
+        
+         // 页面切换功能
         function showPage(pageId) {
             // 隐藏所有页面
             document.querySelectorAll('.page-container').forEach(page => {
@@ -704,28 +1341,6 @@
                 this.style.boxShadow = '';
             });
         });
-
-        // 横幅图片定时切换
-        const bannerImages = ['op.png', 'op1.png'];
-        let currentBannerIndex = 0;
-        const bannerImage = document.getElementById('banner-image');
-        
-        function switchBanner() {
-            // 淡出效果
-            bannerImage.style.opacity = '0';
-            
-            setTimeout(() => {
-                // 切换图片
-                currentBannerIndex = (currentBannerIndex + 1) % bannerImages.length;
-                bannerImage.src = bannerImages[currentBannerIndex];
-                
-                // 淡入效果
-                bannerImage.style.opacity = '1';
-            }, 500); // 等待淡出动画完成
-        }
-        
-        // 每5秒切换一次横幅
-        setInterval(switchBanner, 5000);
         
         // 下雪特效
         function createSnowflake() {
@@ -756,15 +1371,121 @@
         // 每300毫秒创建一个新雪花
         setInterval(createSnowflake, 300);
         
-        // 禁止页面滚动
+        // 弹幕广告功能
+        function createDanmaku() {
+            const container = document.getElementById('danmaku-container');
+            const danmakuTexts = [
+                '👻123的世界·崩坏👻恐怖模组·我的世界机制最强！',
+                '🔥最强机制🔥123的世界·崩坏 - 史诗级恐怖体验！',
+                '💀恐怖来袭💀123的世界·崩坏 - 惊悚末日生存！',
+                '⚠️123的世界·崩坏⚠️我的世界机制最强恐怖模组！',
+                '🌟123的世界·崩坏🌟前所未有的恐怖游戏体验！',
+                '👾面对恐怖生物！123的世界·崩坏等你来挑战！',
+                '💫最强机制💫123的世界·崩坏模组超好玩！',
+                '【匠心重铸】创世兵器录此模组好玩有趣',
+                '梗多材质（带音效包）- 精美的材质包，配合生动的音效',
+                '超级有趣好玩的模组推荐！'
+            ];
+            
+            const danmaku = document.createElement('div');
+            danmaku.className = 'danmaku-item';
+            danmaku.textContent = danmakuTexts[Math.floor(Math.random() * danmakuTexts.length)];
+            
+            // 随机垂直位置（在整个页面高度内分散分布，避开顶部10%和底部10%）
+            const windowHeight = window.innerHeight;
+            const minTop = windowHeight * 0.1; // 避开顶部10%
+            const maxTop = windowHeight * 0.8; // 避开底部20%
+            const randomTop = minTop + Math.random() * (maxTop - minTop);
+            danmaku.style.top = randomTop + 'px';
+            
+            // 随机动画时长
+            const randomDuration = 12 + Math.random() * 8;
+            danmaku.style.animationDuration = randomDuration + 's';
+            
+            // 随机动画延迟
+            const randomDelay = Math.random() * 3;
+            danmaku.style.animationDelay = randomDelay + 's';
+            
+            container.appendChild(danmaku);
+            
+            // 动画结束后移除弹幕
+            setTimeout(() => {
+                if (danmaku.parentNode) {
+                    danmaku.parentNode.removeChild(danmaku);
+                }
+            }, (randomDuration + randomDelay) * 1000);
+        }
+        
+        // 每8秒创建一个新的弹幕
+        setInterval(createDanmaku, 8000);
+        
+        // 页面加载完成后分散创建弹幕
+        window.addEventListener('load', function() {
+            setTimeout(() => createDanmaku(), 2000);
+            setTimeout(() => createDanmaku(), 6000);
+            setTimeout(() => createDanmaku(), 10000);
+        });
+        
+        // 平滑滚轮滑动支持
+        let isScrolling = false;
+        let scrollTimeout;
+        
         document.addEventListener('wheel', function(e) {
+            // 允许在内容区域内正常滚动
+            const activePage = document.querySelector('.page-container.active');
+            const scrollableContent = activePage?.querySelector('.overflow-y-auto, section');
+            
+            if (scrollableContent) {
+                // 如果内容可以滚动，允许正常滚动行为
+                return;
+            }
+            
+            // 否则使用平滑滚动效果
             e.preventDefault();
+            
+            if (isScrolling) return;
+            
+            isScrolling = true;
+            const delta = e.deltaY || e.detail || e.wheelDelta;
+            const scrollSpeed = 50;
+            
+            window.scrollBy({
+                top: delta > 0 ? scrollSpeed : -scrollSpeed,
+                behavior: 'smooth'
+            });
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 100);
         }, { passive: false });
         
-        // 禁止箭头键滚动
+        // 箭头键滚动支持
         document.addEventListener('keydown', function(e) {
+            const activePage = document.querySelector('.page-container.active');
+            const scrollableContent = activePage?.querySelector('.overflow-y-auto, section');
+            
+            // 如果内容可以滚动，允许箭头键控制
+            if (scrollableContent && [32, 37, 38, 39, 40].includes(e.keyCode)) {
+                return;
+            }
+            
+            // 否则阻止默认滚动行为
             if ([32, 37, 38, 39, 40].includes(e.keyCode)) {
                 e.preventDefault();
+                
+                const scrollSpeed = 100;
+                switch(e.keyCode) {
+                    case 38: // 上箭头
+                    case 37: // 左箭头
+                        window.scrollBy({ top: -scrollSpeed, behavior: 'smooth' });
+                        break;
+                    case 40: // 下箭头
+                    case 39: // 右箭头
+                    case 32: // 空格键
+                        window.scrollBy({ top: scrollSpeed, behavior: 'smooth' });
+                        break;
+                }
             }
         });
     </script>
