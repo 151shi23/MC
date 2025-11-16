@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星珩赴 - 我的世界模组整合团队</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 自定义Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'minecraft-green': '#7CFC00',
+                        'minecraft-blue': '#00FFFF',
+                        'minecraft-sky': '#87CEEB',
+                        'minecraft-brown': '#8B4513',
+                        'minecraft-red': '#FF4500',
+                        'minecraft-yellow': '#FFD700',
+                        'minecraft-dark': '#1E1E1E',
+                    },
+                    fontFamily: {
+                        'pixel': ['VT323', 'monospace', 'system-ui'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-in': 'slideIn 0.5s ease-out forwards',
+                        'slide-out': 'slideOut 0.5s ease-in forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(124, 252, 0, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(124, 252, 0, 0.8)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideOut: {
+                            '0%': { transform: 'translateX(0)', opacity: '1' },
+                            '100%': { transform: 'translateX(-100%)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            }
+            .pixel-borders {
+                box-shadow: 
+                    -4px 0 0 0 #000,
+                    4px 0 0 0 #000,
+                    0 -4px 0 0 #000,
+                    0 4px 0 0 #000;
+            }
+            .block-bg {
+                background-image: url('https://p11-doubao-search-sign.byteimg.com/labis/image/3f38fe89b01b3bdf67acbdb91b3b5174~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778819553&x-signature=pP7YbHM5HT5y2NOmoY1SmQQQkPs%3D');
+                background-size: cover;
+                background-attachment: fixed;
+            }
+            .grass-block {
+                background-color: #2d3748;
+                background-size: 64px;
+            }
+            .stone-block {
+                background-image: url('https://p11-doubao-search-sign.byteimg.com/pgc-image/47405b0e5cd64455800ccd1cccbda06b~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778819553&x-signature=iWcADMJSaWNmdvfE4xZL%2BEyexDg%3D');
+                background-size: 64px;
+            }
+            .glass-block {
+                background-color: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(5px);
+            }
+            .member-card {
+                transition: all 0.3s ease;
+                transform-style: preserve-3d;
+                perspective: 1000px;
+            }
+            .member-card:hover {
+                transform: translateY(-10px) rotateY(10deg);
+            }
+            .member-card::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 10px;
+                background-color: #4a5568;
+                transform: translateZ(-1px);
+            }
+            .btn-3d {
+                position: relative;
+                transition: all 0.2s ease;
+                transform: translateY(-4px);
+                box-shadow: 0 4px 0 0 #000;
+            }
+            .btn-3d:active {
+                transform: translateY(0);
+                box-shadow: 0 0 0 0 #000;
+            }
+            .btn-3d:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 6px 0 0 #000;
+            }
+            .page-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            .page-container.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+            .main-menu {
+                z-index: 100;
+            }
+            .content-page {
+                z-index: 50;
+            }
+            /* 下雪特效 */
+            .snowflake {
+                position: fixed;
+                top: -10px;
+                z-index: 100;
+                color: white;
+                font-size: 1em;
+                animation: snowfall linear infinite;
+                pointer-events: none;
+            }
+            @keyframes snowfall {
+                0% {
+                    transform: translateY(-10px) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+            /* 按钮翻折特效 */
+        .flip-button {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            height: auto;
+            min-height: 3rem;
+        }
+        
+        .flip-button:hover {
+            transform: rotateY(180deg);
+        }
+        
+        .button-front, .button-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .button-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 确保按钮容器有足够高度 */
+        .grid > .flip-button {
+            min-height: 3.5rem;
+        }
+        
+        @media (min-width: 640px) {
+            .grid > .flip-button {
+                min-height: 4rem;
+            }
+            .button-front, .button-back {
+                padding: 1rem 1.5rem;
+            }
+        }
+        }
+    </style>
+    <!-- 引入像素字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body class="font-pixel bg-gray-900 text-white overflow-hidden h-screen">
+    <!-- 背景层 -->
+    <div class="fixed inset-0 block-bg opacity-30 z-0"></div>
+    
+    <!-- 顶部横幅 -->
+    <div class="fixed top-0 left-0 w-full h-16 z-10 px-4">
+        <div class="max-w-6xl mx-auto h-full">
+            <img id="banner-image" src="op.png" alt="顶部横幅" class="w-full h-full object-cover transition-opacity duration-500 rounded-lg">
+        </div>
+    </div>
+    
+    <!-- 主菜单页面 -->
+    <div id="main-menu" class="page-container main-menu active relative z-20 h-full flex flex-col">
+        <!-- 头部 -->
+        <header class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center mt-16">
+            <!-- Logo -->
+            <div class="w-64 h-48 sm:w-80 sm:h-60 md:w-96 md:h-72 mb-4 sm:mb-8 flex items-center justify-center animate-float">
+                <img src="logo.png" 
+                     alt="星珩赴团队标志" 
+                     class="w-full h-auto">
+            </div>
+            
+            <!-- 团队名称和口号 -->
+            <div class="text-center mb-6 sm:mb-12">
+                <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-minecraft-green text-shadow-lg mb-2">星☆珩☆赴</h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-minecraft-blue text-shadow">「群星齐聚，珩心致力，共赴未来」</p>
+            </div>
+            
+            <!-- 按钮菜单 -->
+            <div class="w-full max-w-2xl px-2 sm:px-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                     <button onclick="showPage('about-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                         <div class="button-front">
+                             <i class="fa fa-info-circle mr-1 sm:mr-2"></i>团队介绍
+                         </div>
+                         <div class="button-back bg-white text-black">
+                             <i class="fa fa-info-circle mr-1 sm:mr-2"></i>进入介绍
+                         </div>
+                     </button>
+                     <button onclick="showPage('rules-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                         <div class="button-front">
+                             <i class="fa fa-list-ul mr-1 sm:mr-2"></i>团规
+                         </div>
+                         <div class="button-back bg-white text-black">
+                             <i class="fa fa-list-ul mr-1 sm:mr-2"></i>查看规则
+                         </div>
+                     </button>
+                     <button onclick="showPage('recruitment-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                         <div class="button-front">
+                             <i class="fa fa-users mr-1 sm:mr-2"></i>招人要求
+                         </div>
+                         <div class="button-back bg-white text-black">
+                             <i class="fa fa-users mr-1 sm:mr-2"></i>了解要求
+                         </div>
+                     </button>
+                     <button onclick="showPage('deputy-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                         <div class="button-front">
+                             <i class="fa fa-star mr-1 sm:mr-2"></i>副团长选拔
+                         </div>
+                         <div class="button-back bg-white text-black">
+                             <i class="fa fa-star mr-1 sm:mr-2"></i>参与选拔
+                         </div>
+                     </button>
+                     <button onclick="showPage('members-page')" class="flip-button btn-3d block px-4 py-3 sm:px-6 sm:py-4 bg-black text-white text-base sm:text-xl font-bold border-2 border-white hover:bg-white hover:text-black transition-all duration-200 sm:col-span-2">
+                         <div class="button-front">
+                             <i class="fa fa-user-circle mr-1 sm:mr-2"></i>团队成员
+                         </div>
+                         <div class="button-back bg-white text-black">
+                             <i class="fa fa-user-circle mr-1 sm:mr-2"></i>查看成员
+                         </div>
+                     </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 页脚 -->
+        <footer class="bg-minecraft-dark py-4 border-t-4 border-minecraft-green">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-lg">© 2025 星珩赴团队 版权所有</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- 团队介绍页面 -->
+    <div id="about-page" class="page-container content-page relative z-20 h-full flex flex-col">
+        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+            <!-- 返回按钮 -->
+            <div class="mb-6">
+                <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>返回主菜单
+                </button>
+            </div>
+            
+            <!-- 团队介绍 -->
+            <section class="glass-block rounded-lg p-4 sm:p-6 md:p-8 pixel-borders">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-minecraft-green mb-4 sm:mb-6 text-shadow text-center">团队介绍</h2>
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="md:w-1/2">
+                        <img src="po.jpeg" 
+                               alt="我的世界团队" 
+                               class="w-full h-auto rounded-lg pixel-borders">
+                    </div>
+                    <div class="md:w-1/2">
+                        <p class="text-lg mb-4 text-shadow-sm">「星☆珩☆赴」团队，是一个以网易我的世界模组整合为核心的专业团队，也是目前中国唯一专注于网易我的世界模组整合的团队！</p>
+                        <p class="text-lg mb-4 text-shadow-sm">团队成员和谐友爱，互相讨论共同进步，致力于打造专属于网易版的优质整合包！</p>
+                        <p class="text-lg mb-4 text-shadow-sm">我们的初衷是让模组整合文化被更多玩家所熟知，让更多人体验到模组整合带来的无限乐趣。</p>
+                        <div class="mt-6 flex justify-center">
+                            <a href="https://qm.qq.com/q/uYkMu4Keem" target="_blank" class="btn-3d inline-block px-6 py-3 bg-black text-white font-bold text-xl border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                                <i class="fa fa-link mr-2"></i>加入我们
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- 团规页面 -->
+    <div id="rules-page" class="page-container content-page relative z-20 h-full flex flex-col">
+        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+            <!-- 返回按钮 -->
+            <div class="mb-6">
+                <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>返回主菜单
+                </button>
+            </div>
+            
+            <!-- 团规 -->
+            <section class="glass-block rounded-lg p-4 sm:p-6 md:p-8 pixel-borders">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-minecraft-green mb-4 sm:mb-6 text-shadow text-center">团规</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="bg-minecraft-dark p-4 rounded-lg pixel-borders">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-minecraft-red rounded-full mr-3">
+                                <span class="font-bold text-xl">1</span>
+                            </div>
+                            <h3 class="text-xl font-bold">成员之间不得互相辱骂</h3>
+                        </div>
+                        <p class="text-gray-300">保持友好交流环境，尊重每一位成员</p>
+                    </div>
+                    
+                    <div class="bg-minecraft-dark p-4 rounded-lg pixel-borders">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-minecraft-yellow rounded-full mr-3">
+                                <span class="font-bold text-xl">2</span>
+                            </div>
+                            <h3 class="text-xl font-bold">互帮互助，禁止引战内战</h3>
+                        </div>
+                        <p class="text-gray-300">共同维护团队和谐，携手解决问题</p>
+                    </div>
+                    
+                    <div class="bg-minecraft-dark p-4 rounded-lg pixel-borders">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-minecraft-blue rounded-full mr-3">
+                                <span class="font-bold text-xl">3</span>
+                            </div>
+                            <h3 class="text-xl font-bold">不可刷屏，不可打广告</h3>
+                        </div>
+                        <p class="text-gray-300">保持交流质量，禁止无关信息干扰</p>
+                    </div>
+                    
+                    <div class="bg-minecraft-dark p-4 rounded-lg pixel-borders">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 flex items-center justify-center bg-minecraft-green rounded-full mr-3">
+                                <span class="font-bold text-xl">4</span>
+                            </div>
+                            <h3 class="text-xl font-bold">可分享视频，不可乱招人「需审核」</h3>
+                        </div>
+                        <p class="text-gray-300">分享优质内容，新成员加入需经过审核</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 bg-minecraft-red rounded-lg pixel-borders text-center">
+                    <p class="text-xl font-bold">「团规若违反三次直接剔除」</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- 招人要求页面 -->
+    <div id="recruitment-page" class="page-container content-page relative z-20 h-full flex flex-col">
+        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+            <!-- 返回按钮 -->
+            <div class="mb-6">
+                <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>返回主菜单
+                </button>
+            </div>
+            
+            <!-- 招人要求 -->
+            <section class="glass-block rounded-lg p-4 sm:p-6 md:p-8 pixel-borders">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-minecraft-green mb-4 sm:mb-6 text-shadow text-center">招人启示</h2>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl sm:text-2xl font-bold text-minecraft-blue mb-3 sm:mb-4 text-center">目前的进团要求</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="bg-minecraft-dark p-5 rounded-lg pixel-borders transform transition-transform hover:scale-105">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-16 h-16 bg-minecraft-blue rounded-full flex items-center justify-center">
+                                    <i class="fa fa-gamepad text-3xl"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-lg sm:text-xl font-bold mb-2 text-center">要求玩网易版</h4>
+                            <p class="text-center">也可以同时玩其他例如基岩版等只要玩就行</p>
+                        </div>
+                        
+                        <div class="bg-minecraft-dark p-5 rounded-lg pixel-borders transform transition-transform hover:scale-105">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-16 h-16 bg-minecraft-green rounded-full flex items-center justify-center">
+                                    <i class="fa fa-heart text-3xl"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2 text-center">热爱模组整合</h4>
+                            <p class="text-center">知道模组整合愿献自己的一份力量</p>
+                        </div>
+                        
+                        <div class="bg-minecraft-dark p-5 rounded-lg pixel-borders transform transition-transform hover:scale-105">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-16 h-16 bg-minecraft-yellow rounded-full flex items-center justify-center">
+                                    <i class="fa fa-smile-o text-3xl"></i>
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold mb-2 text-center">要求性格和蔼</h4>
+                            <p class="text-center">互相成长，共同进步</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="https://qm.qq.com/q/uYkMu4Keem" target="_blank" class="btn-3d inline-block px-6 sm:px-8 py-3 sm:py-4 bg-black text-white font-bold text-lg sm:text-2xl border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                            <i class="fa fa-link mr-1 sm:mr-2"></i>点击此处加入
+                        </a>
+                    <p class="mt-3 sm:mt-4 text-sm sm:text-lg">加入链接：<a href="https://qm.qq.com/q/uYkMu4Keem" target="_blank" class="text-minecraft-blue hover:underline">https://qm.qq.com/q/uYkMu4Keem</a></p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- 副团长选拔页面 -->
+    <div id="deputy-page" class="page-container content-page relative z-20 h-full flex flex-col">
+        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+            <!-- 返回按钮 -->
+            <div class="mb-6">
+                <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>返回主菜单
+                </button>
+            </div>
+            
+            <!-- 副团长选拔 -->
+            <section class="glass-block rounded-lg p-4 sm:p-6 md:p-8 pixel-borders">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-minecraft-green mb-4 sm:mb-6 text-shadow text-center">副团长选拔要求</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-minecraft-blue mb-3 sm:mb-4">选拔要求</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-dark rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <span class="font-bold">1</span>
+                                </div>
+                                <p>对团队做出巨大奉献</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-dark rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <p>选举的票赞成数2/3</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-dark rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <p>具有创造奉献精神</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-dark rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <span class="font-bold">4</span>
+                                </div>
+                                <p>不可加入其他公会团队</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-dark rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <span class="font-bold">5</span>
+                                </div>
+                                <p>长时间在线性格好</p>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-minecraft-yellow mb-3 sm:mb-4">副团长好处</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-yellow rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0 text-minecraft-dark">
+                                    <span class="font-bold">1</span>
+                                </div>
+                                <p>权限仅次于团长之下</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-yellow rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0 text-minecraft-dark">
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <p>隔一段时间会有福利补贴</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 bg-minecraft-yellow rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0 text-minecraft-dark">
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <p>得知团队最新内部情报</p>
+                            </li>
+                        </ul>
+                        
+                        <div class="mt-8 p-4 bg-minecraft-dark rounded-lg pixel-borders">
+                            <p class="text-lg italic">尾言：感谢您对星珩赴的支持与奉献</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- 团队成员页面 -->
+    <div id="members-page" class="page-container content-page relative z-20 h-full flex flex-col">
+        <div class="container mx-auto px-4 py-8 flex-grow overflow-y-auto mt-16">
+            <!-- 返回按钮 -->
+            <div class="mb-6">
+                <button onclick="showPage('main-menu')" class="btn-3d inline-block px-4 py-2 bg-black text-white border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>返回主菜单
+                </button>
+            </div>
+            
+            <!-- 团队成员 -->
+            <section class="glass-block rounded-lg p-4 sm:p-6 md:p-8 pixel-borders">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-minecraft-green mb-4 sm:mb-6 text-shadow text-center">团队成员</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+                    <!-- 团长 -->
+                    <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
+                        <div class="h-32 sm:h-40 md:h-48 bg-minecraft-blue flex items-center justify-center">
+                            <img src="tz.JPEG" 
+                                 alt="团长" 
+                                 class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-cover rounded-full border-2 sm:border-4 border-minecraft-green">
+                        </div>
+                        <div class="p-3 sm:p-4 text-center">
+                            <h3 class="text-lg sm:text-2xl font-bold text-minecraft-green">岚Fazy</h3>
+                            <p class="text-gray-300">团长</p>
+                            <div class="mt-3 flex justify-center space-x-3">
+                                <span class="px-3 py-1 bg-minecraft-green text-minecraft-dark rounded-full text-sm font-bold">创始人</span>
+                                <span class="px-3 py-1 bg-minecraft-blue rounded-full text-sm">管理团队</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    
+                    <!-- 开发者1 -->
+                    <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
+                        <div class="h-48 bg-minecraft-green flex items-center justify-center">
+                            <img src="wz1.JPEG" 
+                                 alt="开发者" 
+                                 class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-2xl font-bold text-minecraft-green">极白✨</h3>
+                            <p class="text-gray-300">我的世界开发者</p>
+                            <div class="mt-3 flex justify-center space-x-3">
+                                <span class="px-3 py-1 bg-minecraft-green rounded-full text-sm font-bold">模组开发</span>
+                                <span class="px-3 py-1 bg-minecraft-blue rounded-full text-sm">技术支持</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 开发者2 -->
+                    <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
+                        <div class="h-48 bg-minecraft-green flex items-center justify-center">
+                            <img src="wz2.JPEG" 
+                                 alt="开发者" 
+                                 class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-2xl font-bold text-minecraft-green">123</h3>
+                            <p class="text-gray-300">网站支持 我的世界开发者</p>
+                            <div class="mt-3 flex justify-center space-x-3">
+                                <span class="px-3 py-1 bg-minecraft-green rounded-full text-sm font-bold">模组开发</span>
+                                <span class="px-3 py-1 bg-minecraft-blue rounded-full text-sm">技术支持</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 开发者3 -->
+                    <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders">
+                        <div class="h-48 bg-minecraft-green flex items-center justify-center">
+                            <img src="wz3.JPEG" 
+                                 alt="开发者" 
+                                 class="w-32 h-32 object-cover rounded-full border-4 border-minecraft-yellow">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-2xl font-bold text-minecraft-green">开发者</h3>
+                            <p class="text-gray-300">等待填写</p>
+                            <div class="mt-3 flex justify-center space-x-3">
+                                <span class="px-3 py-1 bg-minecraft-green rounded-full text-sm font-bold">模组开发</span>
+                                <span class="px-3 py-1 bg-minecraft-blue rounded-full text-sm">技术支持</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 招募中 -->
+                    <div class="member-card relative bg-minecraft-dark rounded-lg overflow-hidden pixel-borders border-dashed border-2 border-minecraft-red">
+                        <div class="h-48 bg-minecraft-dark flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fa fa-plus-circle text-5xl text-minecraft-red mb-2"></i>
+                                <p class="text-xl font-bold">招募中</p>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-2xl font-bold text-minecraft-red">虚位以待</h3>
+                            <p class="text-gray-300">加入我们，一起创造</p>
+                            <div class="mt-3 flex justify-center">
+                                <a href="https://qm.qq.com/q/uYkMu4Keem" target="_blank" class="px-3 py-1 bg-minecraft-red rounded-full text-sm font-bold hover:bg-minecraft-yellow hover:text-minecraft-dark transition-colors">
+                                    申请加入
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+        
+        // 方块动画效果
+        function createFloatingBlocks() {
+            const container = document.body;
+            const blockTypes = [
+                'https://p26-doubao-search-sign.byteimg.com/labis/image/48e83961708fb066e0d11bcd542a3fdc~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778819553&x-signature=x0ZBLVf%2BPlcQmkdO0Yit5T7b%2BPs%3D',
+                'https://p11-doubao-search-sign.byteimg.com/pgc-image/47405b0e5cd64455800ccd1cccbda06b~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778819553&x-signature=iWcADMJSaWNmdvfE4xZL%2BEyexDg%3D',
+                'https://p11-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/b15d152281a34fc29b57187acd3f60c5~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778819553&x-signature=v7729Plt5Pn1Rm7xhJvn8sWpKy4%3D'
+            ];
+            
+            // 创建5个浮动方块
+            for (let i = 0; i < 5; i++) {
+                const block = document.createElement('div');
+                const randomBlock = blockTypes[Math.floor(Math.random() * blockTypes.length)];
+                
+                block.style.position = 'fixed';
+                block.style.width = '64px';
+                block.style.height = '64px';
+                block.style.backgroundImage = `url(${randomBlock})`;
+                block.style.backgroundSize = '64px';
+                block.style.zIndex = '15';
+                block.style.pointerEvents = 'none';
+                
+                // 随机位置
+                block.style.left = `${Math.random() * 100}vw`;
+                block.style.top = `${Math.random() * 100}vh`;
+                
+                // 随机动画延迟
+                const delay = Math.random() * 5;
+                
+                // 添加动画
+                block.style.animation = `float ${3 + Math.random() * 2}s ease-in-out infinite ${delay}s`;
+                
+                container.appendChild(block);
+            }
+        }
+        
+        // 页面加载完成后创建浮动方块
+        window.addEventListener('load', createFloatingBlocks);
+        
+        // 成员卡片悬停效果
+        const memberCards = document.querySelectorAll('.member-card');
+        memberCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) rotateY(10deg)';
+                this.style.boxShadow = '0 10px 20px rgba(124, 252, 0, 0.3)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // 横幅图片定时切换
+        const bannerImages = ['op.png', 'op1.png'];
+        let currentBannerIndex = 0;
+        const bannerImage = document.getElementById('banner-image');
+        
+        function switchBanner() {
+            // 淡出效果
+            bannerImage.style.opacity = '0';
+            
+            setTimeout(() => {
+                // 切换图片
+                currentBannerIndex = (currentBannerIndex + 1) % bannerImages.length;
+                bannerImage.src = bannerImages[currentBannerIndex];
+                
+                // 淡入效果
+                bannerImage.style.opacity = '1';
+            }, 500); // 等待淡出动画完成
+        }
+        
+        // 每5秒切换一次横幅
+        setInterval(switchBanner, 5000);
+        
+        // 下雪特效
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.innerHTML = '❄';
+            
+            // 随机位置
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            
+            // 随机大小
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            
+            // 随机动画时长
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            
+            // 随机动画延迟
+            snowflake.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.body.appendChild(snowflake);
+            
+            // 动画结束后移除雪花
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+        
+        // 每300毫秒创建一个新雪花
+        setInterval(createSnowflake, 300);
+        
+        // 禁止页面滚动
+        document.addEventListener('wheel', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // 禁止箭头键滚动
+        document.addEventListener('keydown', function(e) {
+            if ([32, 37, 38, 39, 40].includes(e.keyCode)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
